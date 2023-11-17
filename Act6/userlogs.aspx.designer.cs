@@ -11,7 +11,7 @@ namespace Act6
 {
 
 
-    public partial class mainform
+    public partial class userlogs
     {
 
         /// <summary>
@@ -24,12 +24,12 @@ namespace Act6
         protected global::System.Web.UI.HtmlControls.HtmlForm form1;
 
         /// <summary>
-        /// UserRepeater control.
+        /// logGridView control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Repeater UserRepeater;
+        protected global::System.Web.UI.WebControls.GridView logGridView;
     }
 }

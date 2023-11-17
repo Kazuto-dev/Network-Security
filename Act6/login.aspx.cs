@@ -12,6 +12,8 @@ using System.Web.Routing;
 using System.Web.Security.AntiXss;
 using System.IO;
 using Serilog;
+using System.Web.Security;
+using System.Configuration;
 
 namespace Act6
 {
@@ -47,7 +49,12 @@ namespace Act6
                 {
                     // Log successful login
                     Log.Information("User {Username} logged in successfully", username);
+                    // Log the user in
 
+                    FormsAuthentication.RedirectFromLoginPage(username, false);
+
+                    // Log the login activity
+                    LogUserActivity("Login", username);
                     // Redirect to the encrypted URL
                     Response.Redirect("~/mainform.aspx");
                 }
@@ -64,6 +71,28 @@ namespace Act6
             }
         }
 
+        private void LogUserActivity(string action, string username)
+        {
+            // Get the connection string from web.config
+            string connectionString = @"Data Source=(LocalDB)\MSSQLLocalDB;AttachDbFilename=C:\Users\Jandell\source\repos\Act6\Act6\App_Data\Database2.mdf;Integrated Security=True";
+
+            // Insert the log into the UserLog table
+            using (SqlConnection connection = new SqlConnection(connectionString))
+            {
+                connection.Open();
+
+                string insertQuery = "INSERT INTO userLog (UserId, Action, Timestamp) VALUES (@UserId, @Action, @Timestamp)";
+
+                using (SqlCommand cmd = new SqlCommand(insertQuery, connection))
+                {
+                    cmd.Parameters.AddWithValue("@UserId", username);
+                    cmd.Parameters.AddWithValue("@Action", action);
+                    cmd.Parameters.AddWithValue("@Timestamp", DateTime.Now);
+
+                    cmd.ExecuteNonQuery();
+                }
+            }
+        }
     }
 
 }
